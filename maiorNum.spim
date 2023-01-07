@@ -1,0 +1,48 @@
+.data
+
+.text
+
+    main:
+
+    #ler o num de linhas
+    li $v0, 5
+    syscall
+
+    #armazenando num de linhas no $t0
+    move $t0, $v0
+
+    #lendo o primeiro numero 
+    li $v0, 5
+    syscall
+
+    #definir o primeiro num como maior
+    move $a0, $v0
+
+    #contador do loop como 0
+    li $t1, 0
+
+    loop:
+        addi $t1, $t1, 1 
+        beq $t1, $t0, saida #condicao de parada do loop
+        
+        li $v0, 5
+        syscall
+
+        #comparando os dois num 
+        slt $t2, $a0, $v0
+        bne $t2, $zero, trocaNum
+        j loop
+
+
+    trocaNum:
+        #define o novo num como maior
+        move $a0, $v0
+        j loop
+    
+    saida: 
+
+    #lendo o valor 
+    li $v0, 1
+    syscall
+    #encerrando o sistema
+    li $v0, 10
