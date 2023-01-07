@@ -1,0 +1,11 @@
+.data 
+    out_put: .asciiz "Ola Mundo"
+.text
+    main: 
+
+    li $v0, 4
+    la $a0, out_put
+    syscall
+
+    li $v0, 10
+    syscall
