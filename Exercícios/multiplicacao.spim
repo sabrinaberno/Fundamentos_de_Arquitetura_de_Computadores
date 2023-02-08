@@ -1,0 +1,44 @@
+multfac:
+
+addi $t6, $zero, 0
+
+slt $t7, $a0, $zero
+slt $t8, $a1, $zero
+
+beq $t7, $zero, teste
+nor $a0, $a0, $zero
+addi $a0, $a0, 1
+
+teste:
+beq $t8, $zero, passo1_2
+nor $a1, $a1, $zero
+addi $a1, $a1, 1
+
+passo1_2:
+move $t0, $zero
+move $t1, $a1 
+
+passo3:
+andi $t2, $t1, 1
+beq $t2, $zero, passo4_5
+add $t0, $t0, $a0
+
+passo4_5:
+andi $t3, $t0, 1
+srl $t0, $t0, 1
+srl $t1, $t1, 1
+sll $t3, $t3, 31
+add $t1, $t1, $t3
+
+addi $t6, $t6, 1
+bne $t6, 32, passo3
+
+beq $t7, $t8, final
+nor $t1, $t1, $zero
+nor $t0, $t0, $zero
+addi $t1, $t1, 1
+
+final:
+mthi $t0
+mtlo $t1
+jr $ra
