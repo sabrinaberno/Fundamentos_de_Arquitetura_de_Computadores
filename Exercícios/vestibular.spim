@@ -1,0 +1,67 @@
+.data
+    #Mapeamento
+    #$s0 = num de questoes
+    #$t1 = gabarito 
+    #$t2 = resposta
+    #$t3 = contador
+    #$t8 = num de acertos
+
+    gabarito: .space 200
+    resposta: .space 200
+
+.text
+main:
+
+#ler o num de linhas
+li $v0, 5
+syscall
+
+#armazenando num de linhas no $t0
+move $s0, $v0
+
+#Lendo o gabarito
+li $v0, 8
+la $a0, gabarito # armazena o endereco
+li $a1, 200 # armazena o tamanho maximo
+syscall
+
+#Lendo a resposta
+li $v0, 8
+la $a0, resposta # armazena o endereco
+li $a1, 200 # armazena o tamanho maximo
+syscall
+
+la $t1, gabarito
+la $t2, resposta
+
+# criando o contador do loop
+li $t3, 0
+li $t8, 0
+
+loop:
+    beq $s0, $t3, saida  #condicao de parada
+    
+    add $t4, $t1, $t3 #lendo todo os elemnetos do vetor
+    add $t5, $t2, $t3 
+    
+    lb $t6, 0($t4) # armazena o elemento
+    lb $t7, 0($t5) # armazena o elemento
+
+    addi $t3, $t3, 1 # adicona 1 no contador 
+    beq $t6, $t7, acertos
+
+    j loop
+
+acertos:
+    addi $t8, $t8, 1 
+    j loop
+
+saida: 
+
+#lendo os acertos
+li $v0, 1
+move $a0, $t8
+syscall
+#encerrando o sistema
+li $v0, 10
+syscall 

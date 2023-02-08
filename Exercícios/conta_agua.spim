@@ -1,0 +1,56 @@
+.data
+
+.text 
+    main: 
+    
+    #ler o consumo de agua
+    li $v0, 5
+    syscall
+
+    #armazenando o consumo em $t0
+    move $t0, $v0
+
+    #ate 10 m3
+    slt $t1, $t0, 11
+    beq $t1, 1, faixa1
+    #entre 11 e 30 m3
+    slt $t1, $t0, 31
+    beq $t1, 1, faixa2
+    #entre 31 e 100
+    slt $t1, $t0, 101
+    beq $t1, 1, faixa3
+    #acima de 101
+    slt $t1, $t0, 101
+    beq $t1, 0, faixa4
+
+    faixa1: 
+        li $t2, 7
+        j saida
+    faixa2: 
+        li $t2, 7
+        sub $t3, $t0, 10
+        mul $t4, $t3, 1
+        add $t2, $t2, $t4
+        j saida
+    faixa3:
+        li $t2, 27
+        sub $t3, $t0, 30
+        mul $t4, $t3, 2
+        add $t2, $t2, $t4
+        j saida
+    faixa4:
+        li $t2, 167
+        sub $t3, $t0, 100
+        mul $t4, $t3, 5
+        add $t2, $t2, $t4
+        j saida
+    
+    saida:
+
+    #lendo o preco da conta
+    move $a0, $t2
+    li $v0, 1
+    syscall
+    
+    #encerrando o sistema
+    li $v0, 10

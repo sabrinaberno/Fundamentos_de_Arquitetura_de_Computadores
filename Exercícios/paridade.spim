@@ -1,0 +1,66 @@
+.data
+    quebra_linha: .asciiz "\n"
+
+.text
+main: 
+
+#ler o num de linhas
+li $v0, 5
+syscall
+
+move $a0, $v0
+
+jal bit_paridade
+j saida
+
+bit_paridade:
+    li $t2, 7 
+    li $t1, 0 
+    li $t4, 2 
+    li $v0, 0
+    move $v1, $a0
+
+loop:
+    addi $t2, $t2, -1 
+    blt $t2, $zero, paridade 
+    andi $t0, $a0, 1 
+    srl $a0, $a0, 1 
+    bne $t0, $zero, contador
+    j loop
+
+contador:
+    addi $t1, $t1, 1
+    j loop
+
+paridade:
+    div $t1, $t4 
+    mfhi $t3 
+    beq $t3, $zero, return
+    addi $v1, $v1, 128 
+    addi $v0, $zero, 1 
+
+return:
+    jr $ra
+
+saida:
+    move $t0, $v0 
+    move $t1, $v1
+
+    addi $v0, $0, 1 
+    add $a0, $0, $t0
+    syscall 
+
+    li $v0, 4 
+    la $a0, quebra_linha
+    syscall
+
+    addi $v0, $0, 1 
+    add $a0, $0, $t1
+    syscall 
+
+    li $v0, 4 
+    la $a0, quebra_linha
+    syscall
+
+    li $v0, 10 
+    syscall
