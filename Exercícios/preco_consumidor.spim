@@ -1,0 +1,33 @@
+.data
+    num100: .double 100.00
+.text
+main: 
+
+li $v0, 7 # custo da fabrica  
+syscall
+mov.d $f2, $f0 
+
+li $v0, 7 #porcentagem do lucro
+syscall
+mov.d $f4, $f0 
+
+li $v0, 7 #porcentagem dos impostos 
+syscall 
+mov.d $f6, $f0
+
+l.d $f10, num100 #inicializando a constante
+
+div.d $f4, $f4, $f10 # dividindo a porcentagem de lucro por 100
+mul.d $f14, $f2, $f4 # valor correspondente a porcentagem do num
+add.d $f8, $f2, $f14 # f8 = result 
+
+div.d $f6, $f6, $f10 # dividindo a porcentagem de impostos por 100
+mul.d $f14, $f2, $f6 # valor correspondente a porcentagem do num 
+add.d $f8, $f8, $f14 # f8 = result 
+
+li $v0, 3
+mov.d $f12, $f8
+syscall
+
+li $v0, 10 # encerrando o programa 
+syscall

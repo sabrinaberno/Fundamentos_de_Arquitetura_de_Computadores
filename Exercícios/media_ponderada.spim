@@ -1,0 +1,40 @@
+.data
+    const: .float 0.0
+.text
+main: 
+
+li $v0, 5 # qtd de num 
+syscall
+
+move $t0, $v0 #armazenando num de linhas no $t0
+
+lwc1 $f1, const #criando o float pesos
+lwc1 $f2, const #criando o float numerador (soma de num)
+
+li $t1, 0 # criando o contador do loop
+
+loop : 
+    beq $t0, $t1, saida #condição de parada do loop 
+
+    li $v0, 6 # lendo o peso 
+    syscall
+    mov.s $f3, $f0 
+    add.s $f1, $f1, $f3 #somando ao valor de f1
+
+    li $v0, 6 # lendo o numero 
+    syscall
+    mul.s $f4, $f3, $f0 # peso*num = f4
+    add.s $f2, $f2, $f4 #somando ao valor de f1
+
+    addi $t1, $t1, 1 #acrescenta 1 no contador
+    j loop #volta pro loop 
+
+saida:
+    div.s $f5, $f2, $f1 #resolvendo a media
+    mov.s $f12, $f5
+
+    li $v0, 2
+    syscall
+
+    li $v0, 10
+    syscall

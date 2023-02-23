@@ -1,0 +1,87 @@
+.data 
+    constsFtoC:  .float 5.0, 9.0, 32.0
+    constsCtoK:  .float 273.15
+.text
+
+main: 
+
+    li $v0, 12 #lendo a escala atual 
+    syscall
+    move $t0, $v0 #salvando a escala em t0
+
+    li $v0, 12 #lendo a quebra de linha
+    syscall
+
+    li $v0, 12 #lendo a escala que deseja
+    syscall
+    move $t1, $v0 #salvando a escala que deseja converter
+
+    li $v0, 12 #lendo a quebra de linha
+    syscall
+
+    li $v0, 6 #ler o float 
+    syscall
+
+    beq		$t0, 67, convertaC_em	# 67 = carater 'C' -> tabela ascii
+    beq		$t0, 70, convertaF_em	# 70 = carater 'F' -> tabela ascii
+    beq		$t0, 75, convertaK_em	# 75 = carater 'K' -> tabela ascii
+
+convertaC_em:
+    beq		$t1, 70, C_to_F	# 70 = carater 'F' -> tabela ascii
+    beq		$t1, 75, C_to_K	# 75 = carater 'K' -> tabela ascii
+
+    C_to_F:
+        la $t3, constsFtoC
+        lwc1 $f2, 0($t3) # $f2 = 5.0
+        lwc1 $f3, 4($t3) # $f3 = 9.0
+        lwc1 $f4, 8($t3) # $f4 = 32.0
+
+        div.s $f1, $f3, $f2 #f1 = 9/5
+        mul.s $f1, $f1, $f0 
+        add.s $f0, $f1, $f4 # result = f1 + 32
+
+        j saida
+
+    C_to_K:
+        lwc1 $f2, constsCtoK
+        add.s $f0, $f0, $f2
+        j saida
+
+
+convertaF_em:
+    #convertendo F_to_C
+    la $t3, constsFtoC
+    lwc1 $f2, 0($t3) # $f2 = 5.0
+    lwc1 $f3, 4($t3) # $f3 = 9.0
+    lwc1 $f4, 8($t3) # $f4 = 32.0
+
+    div.s $f1, $f2, $f3 #f1 = 5 / 9
+    sub.s $f0, $f0, $f4 # result = result - 32
+    mul.s $f0, $f0, $f1 
+
+    beq		$t1, 75, F_to_K	# 75 = carater 'K' -> tabela ascii
+
+    j saida
+
+    F_to_K:
+        lwc1    $f2, constsCtoK
+        add.s   $f0, $f0, $f2
+        j saida
+
+convertaK_em:
+    # convertendo K_to_C
+    lwc1 $f2, constsCtoK
+    sub.s $f0, $f0, $f2
+    
+    beq		$t1, 70, C_to_F	# 70 = carater 'F' -> tabela ascii
+
+    j saida
+    
+saida:
+    li $v0, 2
+    
+    mov.s $f12, $f0
+    syscall
+
+    li $v0, 10
+    syscall
